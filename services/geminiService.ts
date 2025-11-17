@@ -1,5 +1,7 @@
+
 import { GoogleGenAI, Type } from "@google/genai";
-import type { GeminiResponse, ExtractedData, Workflow, PiiArea } from '../types';
+// FIX: Import ChatMessage type
+import type { GeminiResponse, ExtractedData, Workflow, PiiArea, ChatMessage } from '../types';
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
@@ -226,4 +228,40 @@ export const findPiiForRedaction = async (file: { base64Data: string; mimeType: 
         console.error("Error calling Gemini API for PII detection:", error);
         throw new Error(`Failed to detect PII. Details: ${error.message}`);
     }
-}
+};
+
+// FIX: Add missing runSimulationTurn function
+export const runSimulationTurn = async (history: ChatMessage[], knowledgeContext: string[], language: string): Promise<string> => {
+    const formattedHistory = history.map(m => `${m.sender === 'user' ? 'User' : 'Assistant'}: ${m.text}`).join('\n');
+
+    const prompt = `
+        You are Opus, an advanced AI simulation agent for Dubai government services.
+        Your goal is to guide the user through a simulated government process based on the conversation.
+        Be helpful, conversational, and stay in character.
+        Your response should be in ${language}.
+
+        Conversation History:
+        ---
+        ${formattedHistory}
+        ---
+
+        Relevant information from the knowledge base (use this to form your response if relevant):
+        ---
+        ${knowledgeContext.length > 0 ? knowledgeContext.join('\n') : 'No specific information retrieved.'}
+        ---
+
+        Based on the history and knowledge base, provide the Assistant's next response. Only return the response text.
+    `;
+
+    try {
+        const response = await ai.models.generateContent({
+            // Using a more advanced model for simulation as "Opus Agent" is mentioned
+            model: 'gemini-2.5-pro',
+            contents: prompt,
+        });
+        return response.text;
+    } catch (error: any) {
+        console.error("Error calling Gemini API for simulation:", error);
+        throw new Error(`Failed to get a response from the AI model for the simulation. Details: ${error.message}`);
+    }
+};
