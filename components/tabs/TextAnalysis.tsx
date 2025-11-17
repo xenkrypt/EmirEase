@@ -15,11 +15,13 @@ const TextAnalysis: React.FC = () => {
     const [error, setError] = useState('');
 
     const taskDescriptions: Record<Task, string> = {
-        summarize: 'Provide a concise summary of the following text.',
+        summarize: 'Provide a concise summary of the following official text.',
         translate: `Translate the following text into ${language.name}.`,
-        keywords: 'Extract the main keywords from the following text.',
-        correct: 'Correct any spelling and grammar mistakes in the following text.'
+        keywords: 'Extract the main keywords and legal terms from the following text.',
+        correct: 'Correct any spelling and grammar mistakes in the following formal document text.'
     };
+    
+    const placeholderText = `e.g. "Regarding your application for the business license submitted on 01/01/2024, please be advised that additional documentation is required pursuant to Article 5, Section 3 of the Commercial Code. You must provide a valid certificate of good standing and a tenancy contract for your commercial premises within 15 working days. Failure to comply will result in the rejection of your application."`;
 
     const handleAnalyze = async () => {
         if (!inputText.trim()) {
@@ -43,8 +45,8 @@ const TextAnalysis: React.FC = () => {
     return (
         <div className="max-w-4xl mx-auto space-y-8">
             <div className="text-center">
-                <h2 className="text-3xl font-bold text-[rgb(var(--color-text-primary))] mb-2">Text Analysis</h2>
-                <p className="text-lg text-[rgb(var(--color-text-secondary))]">Paste your text below and choose a task for the AI to perform.</p>
+                <h2 className="text-3xl font-bold text-[rgb(var(--color-text-primary))] mb-2">Text Analysis Toolkit</h2>
+                <p className="text-lg text-[rgb(var(--color-text-secondary))]">Analyze government-related text like official circulars, legal clauses, or formal emails.</p>
             </div>
 
             <div className="bg-[rgb(var(--color-card))] p-6 rounded-xl shadow-md space-y-4">
@@ -53,7 +55,7 @@ const TextAnalysis: React.FC = () => {
                     onChange={(e) => setInputText(e.target.value)}
                     rows={10}
                     className="w-full p-3 border border-[rgb(var(--color-border))] bg-[rgb(var(--color-card-secondary))] text-[rgb(var(--color-text-primary))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[rgb(var(--color-primary))] focus:border-transparent transition"
-                    placeholder="Paste your text here..."
+                    placeholder={placeholderText}
                 />
 
                 <div className="flex flex-wrap items-center justify-between gap-4">
@@ -65,10 +67,10 @@ const TextAnalysis: React.FC = () => {
                             onChange={(e) => setTask(e.target.value as Task)}
                             className="appearance-none bg-[rgb(var(--color-card))] border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-primary))] py-2 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:ring-2 focus:ring-[rgb(var(--color-primary))] transition-colors"
                         >
-                            <option value="summarize">Summarize</option>
-                            <option value="translate">Translate</option>
-                            <option value="keywords">Extract Keywords</option>
-                            <option value="correct">Correct Grammar</option>
+                            <option value="summarize">Summarize Official Text</option>
+                            <option value="translate">Translate Legal Text</option>
+                            <option value="keywords">Extract Key Terms</option>
+                            <option value="correct">Proofread Formal Document</option>
                         </select>
                     </div>
 

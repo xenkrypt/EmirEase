@@ -4,6 +4,7 @@ import { ClipboardIcon } from './icons/ClipboardIcon';
 import { CameraIcon } from './icons/CameraIcon';
 import { FILE_SIZE_LIMIT_MB } from '../constants';
 import CameraModal from './CameraModal';
+import { validateFiles } from '../utils/fileUtils';
 
 interface FileUploadProps {
   onFileUpload: (files: File[]) => void;
@@ -16,24 +17,14 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUpload }) => {
   const [error, setError] = useState<string | null>(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
 
-  const validateFiles = (files: FileList | File[]): File[] => {
-    setError(null);
-    const validFiles: File[] = [];
-    for (const file of Array.from(files)) {
-      if (file.size > FILE_SIZE_LIMIT_MB * 1024 * 1024) {
-        setError(`File "${file.name}" is too large. Maximum size is ${FILE_SIZE_LIMIT_MB}MB.`);
-        return [];
-      }
-      validFiles.push(file);
-    }
-    return validFiles;
-  };
-
   const handleFiles = (files: FileList | File[] | null) => {
     if (!files) return;
-    const validated = validateFiles(files);
-    if (validated.length > 0) {
-      onFileUpload(validated);
+    setError(null);
+    const { validFiles, error } = validateFiles(files);
+    if (error) {
+      setError(error);
+    } else if (validFiles.length > 0) {
+      onFileUpload(validFiles);
     }
   };
 
@@ -63,14 +54,17 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUpload }) => {
         const blob = item.getAsFile();
         if (blob) {
             const file = new File([blob], `pasted-image.${blob.type.split('/')[1]}`, { type: blob.type });
-            if (file.size > FILE_SIZE_LIMIT_MB * 1024 * 1024) {
-              setError(`Pasted image is too large. Maximum size is ${FILE_SIZE_LIMIT_MB}MB.`);
+            const { validFiles, error } = validateFiles([file]);
+
+            if (error) {
+              setError(error);
               return;
             }
+
             const reader = new FileReader();
             reader.onload = (event) => {
-              setPastedImage(event.target.result as string);
-              setPastedFile(file);
+              setPastedImage(event.target?.result as string);
+              setPastedFile(validFiles[0]);
             };
             reader.readAsDataURL(blob);
         }

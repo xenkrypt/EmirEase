@@ -77,6 +77,9 @@
       }
 
       @media print {
+        body {
+          background-color: #fff;
+        }
         body * {
           visibility: hidden;
         }
@@ -88,9 +91,26 @@
           left: 0;
           top: 0;
           width: 100%;
+          padding: 2rem;
         }
         .no-print {
-          display: none;
+          display: none !important;
+        }
+         /* Simple prose styles for printed report */
+        #printable-area h2, #printable-area h3 {
+            color: #111827; /* gray-900 */
+            margin-bottom: 0.5rem;
+        }
+        #printable-area p, #printable-area li {
+            color: #374151; /* gray-700 */
+        }
+         #printable-area .print-card {
+            border: 1px solid #e5e7eb; /* gray-200 */
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: none;
+            page-break-inside: avoid;
         }
       }
     </style>
@@ -109,9 +129,13 @@
   }
 }
 </script>
-</head>
+  </head>
   <body class="transition-colors duration-300">
     <div id="root"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        window.jsPDF = window.jspdf.jsPDF;
+    </script>
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>

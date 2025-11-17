@@ -8,6 +8,7 @@ import { Language } from '../../types';
 import type { ExtractedData, Workflow, ChatMessage, GeminiResponse } from '../../types';
 import { extractAndGuide, getFaqAnswer, translateData } from '../../services/geminiService';
 import { languages, EXPIRATION_THRESHOLD_DAYS } from '../../constants';
+import { PdfIconDataUri } from '../icons/PdfIcon';
 
 const DocumentAnalysis: React.FC = () => {
   const [language, setLanguage] = useState<Language>(languages[1]);
@@ -54,7 +55,7 @@ const DocumentAnalysis: React.FC = () => {
     setIsLoading(false);
   };
 
-  const processApiResponse = (result: GeminiResponse) => {
+  const processApiResponse = useCallback((result: GeminiResponse) => {
     if (result && result.extractedData && result.workflow) {
       setApiResponse(result);
       
@@ -85,26 +86,29 @@ const DocumentAnalysis: React.FC = () => {
     } else {
       throw new Error('Invalid response structure from AI.');
     }
-  };
+  }, [checkExpirations]);
 
-  const handleFileUpload = useCallback(async (files: File[]) => {
-    setUploadedFiles(files);
+  const processFilesForApi = useCallback(async (filesToProcess: File[]) => {
+    if (filesToProcess.length === 0) return;
+
     setIsLoading(true);
     setLoadingMessage('Analyzing your document(s)...');
     setError(null);
-    setApiResponse(null);
+    setApiResponse(null); // Clear previous results while processing new set
     setChatHistory([]);
     
-    const filePromises = files.map(file => {
+    const filePromises = filesToProcess.map(file => {
       return new Promise<{ base64Data: string, mimeType: string, preview: string }>((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = () => {
           const resultDataUrl = reader.result as string;
+          const preview = file.type === 'application/pdf' ? PdfIconDataUri : resultDataUrl;
+
           resolve({
             base64Data: resultDataUrl.split(',')[1],
             mimeType: file.type,
-            preview: resultDataUrl
+            preview: preview
           });
         };
         reader.onerror = error => reject(error);
@@ -124,7 +128,19 @@ const DocumentAnalysis: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [language]);
+  }, [language, processApiResponse]);
+
+  const handleFileUpload = useCallback(async (files: File[]) => {
+    setUploadedFiles(files);
+    await processFilesForApi(files);
+  }, [processFilesForApi]);
+  
+  const handleAddFiles = useCallback(async (newFiles: File[]) => {
+    const combinedFiles = [...uploadedFiles, ...newFiles];
+    setUploadedFiles(combinedFiles);
+    await processFilesForApi(combinedFiles);
+  }, [uploadedFiles, processFilesForApi]);
+
 
   const handleLanguageChange = async (newLanguage: Language) => {
     setLanguage(newLanguage);
@@ -225,6 +241,7 @@ const DocumentAnalysis: React.FC = () => {
                 workflow={apiResponse.workflow}
                 crossValidationNotes={apiResponse.crossValidationNotes || null}
                 documentType={apiResponse.documentType}
+                onAddFiles={handleAddFiles}
               />
             </div>
             <div className="lg:col-span-2">

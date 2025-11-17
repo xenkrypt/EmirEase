@@ -7,6 +7,8 @@ export interface ExtractedData {
   label: string;
   value: string;
   verified: boolean;
+  section: string;
+  reason?: string;
 }
 
 export interface WorkflowStep {

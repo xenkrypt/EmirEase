@@ -1,10 +1,10 @@
-# EmirEase: AI-Powered Government Services Assistant
+# 🇦🇪 EmirEase: AI-Powered Government Services Assistant
 
 EmirEase is an AI-powered, multimodal digital assistant designed to help Dubai’s diverse population—especially expatriates—navigate complex government procedures with ease. It enables users to upload official documents, get real-time extraction and translation of key information, receive step-by-step guidance through government workflows, and simulate verification checks—all in multiple languages.
 
 This intelligent agent aims to demystify bureaucracy, making essential services more accessible and less intimidating for everyone.
 
-<img width="1900" height="823" alt="image" src="https://github.com/user-attachments/assets/8b49ca36-313e-4c6b-8107-55ee2e95aa39" />
+![EmirEase Application Screenshot](https://storage.googleapis.com/aistudio-hosting/generative-ai-app-builder/534149959149/emirease-screenshot.png "EmirEase Application Interface")
 
 ## ✨ Core Features
 

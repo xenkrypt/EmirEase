@@ -20,9 +20,11 @@ const responseSchema = {
         properties: {
           label: { type: Type.STRING, description: "The translated label, e.g., 'Full Name', 'Expiry Date'." },
           value: { type: Type.STRING, description: "The extracted value, e.g., 'John Doe', '2025-12-31'." },
-          verified: { type: Type.BOOLEAN, description: "Simulated verification status. Randomly set to true or false." }
+          verified: { type: Type.BOOLEAN, description: "Simulated verification status. Randomly set to true or false." },
+          section: { type: Type.STRING, description: "Categorize the data into a section. Use one of: 'Personal Information', 'Document Identification', 'Validity & Dates', 'Location & Address', or 'Miscellaneous'." },
+          reason: { type: Type.STRING, description: "A brief, translated explanation for the verification status, e.g., 'Verified against national database (Simulated)' or 'This is mock data for demonstration purposes.'." }
         },
-        required: ["label", "value", "verified"]
+        required: ["label", "value", "verified", "section", "reason"]
       }
     },
     workflow: {
@@ -60,13 +62,14 @@ export const extractAndGuide = async (files: { base64Data: string; mimeType: str
     Analyze the attached document(s) and provide structured information in ${language}.
 
     Instructions:
-    1.  First, accurately classify the primary document type.
+    1.  Accurately classify the primary document type.
     2.  Extract key information. CRITICAL: If you find an expiry date, you MUST extract it.
-    3.  If multiple documents are provided, cross-validate key information (like names, numbers) and add notes about consistency or mismatches in 'crossValidationNotes'.
-    4.  Generate a step-by-step workflow for a common process related to the primary document.
-    5.  Simulate a verification check by randomly setting the 'verified' flag.
-    6.  Translate all output (labels, titles, descriptions, notes) into ${language}.
-    7.  Return ONLY the specified JSON format.
+    3.  Group each extracted piece of data into a logical 'section'.
+    4.  Simulate a verification check ('verified' flag) and provide a brief 'reason' for the status.
+    5.  If multiple documents are provided, cross-validate key information and add notes in 'crossValidationNotes'.
+    6.  Generate a step-by-step workflow for a common process related to the primary document.
+    7.  Translate all output (labels, titles, descriptions, notes, sections, reasons) into ${language}.
+    8.  Return ONLY the specified JSON format.
     `;
   
   const contentParts = [
@@ -100,7 +103,7 @@ export const extractAndGuide = async (files: { base64Data: string; mimeType: str
 export const translateData = async (data: { extractedData: ExtractedData[], workflow: Workflow, crossValidationNotes: string[] | null }, targetLanguage: string): Promise<GeminiResponse> => {
     const prompt = `
         Translate the JSON data object below into ${targetLanguage}.
-        - Translate all 'label', 'value' (if not a proper noun or number), 'title', and 'description' fields.
+        - Translate all 'label', 'value' (if not a proper noun or number), 'title', 'description', 'section', and 'reason' fields.
         - Translate the strings in 'crossValidationNotes'.
         - Keep the original structure and keys.
         - Return ONLY the translated JSON object.
