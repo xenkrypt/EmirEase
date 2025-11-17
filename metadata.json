@@ -1,0 +1,8 @@
+{
+  "name": "EmirEase - Multilingual Government Services AI Agent",
+  "description": "An AI-powered, multimodal digital assistant designed to help Dubai’s diverse population—especially expatriates—navigate government procedures. It enables users to upload official documents, get real-time extraction and translation of key info, receive stepwise guidance through complex government workflows, and simulate verification checks—all in multiple languages.",
+  "requestFramePermissions": [
+    "microphone",
+    "camera"
+  ]
+}

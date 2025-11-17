@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EmirEase - AI Government Services</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: rgb(var(--color-bg));
+        color: rgb(var(--color-text-primary));
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      
+      :root {
+        /* Light Theme */
+        --color-bg: 249 250 251; /* gray-50 */
+        --color-card: 255 255 255;
+        --color-card-secondary: 243 244 246; /* gray-100 */
+        --color-text-primary: 17 24 39; /* gray-900 */
+        --color-text-secondary: 55 65 81; /* gray-600 */
+        --color-text-tertiary: 107 114 128; /* gray-500 */
+        --color-border: 229 231 235; /* gray-200 */
+        --color-primary: 220 38 38; /* red-600 */
+        --color-primary-hover: 185 28 28; /* red-700 */
+        --color-primary-text: 255 255 255;
+        --color-success: 22 163 74; /* green-600 */
+        --color-success-bg: 220 252 231; /* green-100 */
+        --color-success-text: 21 128 61; /* green-700 */
+        --color-danger: 220 38 38; /* red-600 */
+        --color-danger-bg: 254 226 226; /* red-100 */
+        --color-danger-text: 185 28 28; /* red-700 */
+      }
+
+      html.dark {
+        /* Dark Theme */
+        --color-bg: 17 24 39; /* gray-900 */
+        --color-card: 31 41 55; /* gray-800 */
+        --color-card-secondary: 55 65 81; /* gray-700 */
+        --color-text-primary: 243 244 246; /* gray-100 */
+        --color-text-secondary: 209 213 219; /* gray-300 */
+        --color-text-tertiary: 156 163 175; /* gray-400 */
+        --color-border: 75 85 99; /* gray-600 */
+        --color-primary: 239 68 68; /* red-500 */
+        --color-primary-hover: 220 38 38; /* red-600 */
+        --color-primary-text: 255 255 255;
+        --color-success: 74 222 128; /* green-400 */
+        --color-success-bg: 22 101 52 / 0.3; /* green-800/30% */
+        --color-success-text: 134 239 172; /* green-300 */
+        --color-danger: 248 113 113; /* red-400 */
+        --color-danger-bg: 153 27 27 / 0.3; /* red-800/30% */
+        --color-danger-text: 252 165 165; /* red-300 */
+      }
+      
+      html.eye-care {
+        /* Eye Care (Sepia) Theme */
+        --color-bg: 244 241 229; /* beige-100 */
+        --color-card: 253 250 242;
+        --color-card-secondary: 236 231 215;
+        --color-text-primary: 60 47 36; /* dark-brown */
+        --color-text-secondary: 92 75 60;
+        --color-text-tertiary: 136 119 106;
+        --color-border: 212 201 183;
+        --color-primary: 194 65 12; /* orange-600 */
+        --color-primary-hover: 146 51 9; /* orange-700 */
+        --color-primary-text: 255 255 255;
+        --color-success: 22 101 52;
+        --color-success-bg: 220 252 231;
+        --color-success-text: 21 128 61;
+        --color-danger: 153 27 27;
+        --color-danger-bg: 254 226 226;
+        --color-danger-text: 127 29 29;
+      }
+
+      @media print {
+        body * {
+          visibility: hidden;
+        }
+        #printable-area, #printable-area * {
+          visibility: visible;
+        }
+        #printable-area {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+        }
+        .no-print {
+          display: none;
+        }
+      }
+    </style>
+    <script>
+      // Apply theme instantly to prevent FOUC
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.classList.add(theme);
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+  }
+}
+</script>
+</head>
+  <body class="transition-colors duration-300">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
